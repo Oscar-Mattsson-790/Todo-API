@@ -1,0 +1,23 @@
+{
+  "name": "todo-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Oscar-Mattsson-790/Todo-API.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Oscar-Mattsson-790/Todo-API/issues"
+  },
+  "homepage": "https://github.com/Oscar-Mattsson-790/Todo-API#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
