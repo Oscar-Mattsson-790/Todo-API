@@ -1,6 +1,26 @@
-const { Router } = require("express");
+import { Router } from "express";
+import uuid from "uuid-random";
+import { checkBody, checkParams } from "../middleware/index.js";
+import database from "nedb-promises";
+
 const router = Router();
-const uuid = require("uuid-random");
+const db = new database({ filename: "todos.db", autoload: true });
+
+db.insert({
+  todo: "Clean the house",
+  id: "cdd160bf-b2f3-43d7-bced-94d0071ab7ec",
+  done: true,
+});
+db.insert({
+  todo: "Walk the dog",
+  id: "123e4567-e89b-12d3-a456-426655440000",
+  done: false,
+});
+db.insert({
+  todo: "Buy groceries",
+  id: "9d0fb0aa-7ca1-49d1-81ad-ccaf4dc4de4f",
+  done: false,
+});
 
 /**
  * Hämta alla todos
@@ -20,17 +40,15 @@ const uuid = require("uuid-random");
  * Method: DELETE
  */
 
-const { checkBody, checkParams } = require("../middleware/index");
-
-let todos = [
-  { todo: "Köp kaffe", id: uuid(), done: false },
-  { todo: "Köp kaka", id: uuid(), done: false },
-  { todo: "Brygg kaffe", id: uuid(), done: false },
-  { todo: "Drick kaffe", id: uuid(), done: false },
-];
-
 router.get("/", (request, response) => {
-  response.json({ success: true, todos: todos });
+  db.find({}, (err, todos) => {
+    if (err) {
+      console.error(err);
+      response.status(500).json({ success: false, error: err });
+    } else {
+      response.json({ success: true, todos: todos });
+    }
+  });
 });
 
 router.post("/", checkBody, (request, response) => {
@@ -42,31 +60,34 @@ router.post("/", checkBody, (request, response) => {
     done: false,
   };
 
-  todos.push(todoObj);
-
-  const result = {
-    success: true,
-    todos: todos,
-  };
-
-  response.json(result);
+  db.insert(todoObj, (err, newTodo) => {
+    if (err) {
+      console.error(err);
+      response.status(500).json({ success: false, error: err });
+    } else {
+      const result = {
+        success: true,
+        todos: [newTodo],
+      };
+      response.json(result);
+    }
+  });
 });
 
 router.delete("/:id", checkParams, (request, response) => {
   const id = request.params.id;
-
-  todos = todos.filter((todo) => {
-    if (todo.id !== id) {
-      return todo;
+  db.remove({ id: id }, {}, (err, numRemoved) => {
+    if (err) {
+      console.error(err);
+      response.status(500).json({ success: false, error: err });
+    } else {
+      const result = {
+        success: true,
+        todos: [],
+      };
+      response.json(result);
     }
   });
-
-  const result = {
-    success: true,
-    todos: todos,
-  };
-
-  response.json(result);
 });
 
-module.exports = router;
+export default router;

@@ -1,8 +1,9 @@
-const express = require("express");
+import express from "express";
+
+import todoRouter from "./routes/todo.js";
+
 const app = express();
 const PORT = process.env.PORT || 8000;
-
-const todoRouter = require("./routes/todo");
 
 app.use(express.json());
 
