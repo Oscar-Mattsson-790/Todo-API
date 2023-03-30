@@ -1,4 +1,4 @@
-export function checkBody(request, response, next) {
+function checkBody(request, response, next) {
   const body = request.body;
 
   if (body?.todo) {
@@ -13,7 +13,7 @@ export function checkBody(request, response, next) {
   }
 }
 
-export function checkParams(request, response, next) {
+function checkParams(request, response, next) {
   const id = request.params.id;
   console.log(`Param id: ${typeof id}`);
 
@@ -29,4 +29,4 @@ export function checkParams(request, response, next) {
   }
 }
 
-export default { checkBody, checkParams };
+module.exports = { checkBody, checkParams };
